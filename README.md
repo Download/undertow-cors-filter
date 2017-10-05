@@ -1,5 +1,5 @@
 # undertow-cors-filter
-A filter to enable correct handling of CORS headers in undertow-based servers (Wildfly, JBOSS EAP)
+**A filter to enable correct handling of CORS headers in undertow-based servers (Wildfly, JBOSS EAP)**
 
 There seems to be an oversight in Java EE's filter handling, because when the container is configured with 
 container managed authorization and a user that is not (yet) authenticated attempts to access a protected 
@@ -52,7 +52,7 @@ Then, add a `filter-ref` to the `host` element (still in `standalone.xml`):
 <host name="default-host" alias="localhost">
   <filter-ref name="undertow-cors-filter" />
 </host>
-```xml
+```
 
 ### urlPattern
 Make sure to configure the `urlPattern` to match those URLs that the filter should be applied to. In the example above,
@@ -73,7 +73,7 @@ This configuration is therefore effectively the same as the snippet we saw befor
 </filters>
 ```
 
-See the section named [Policies](https://github.com/Download/undertow-cors-filter/blob/master/README.md#policies) for more information.
+See the section named [Policies](https://github.com/Download/undertow-cors-filter#policies) for more information.
 
 ### policyParam
 A single string parameter which is used to pass configuration info to the selected policy. Ignored for `AllowAll`, but used by 
@@ -118,7 +118,7 @@ This configuration parameter allows you to set the value of the [Access-Control-
 
 ## Policies
 The following policies are available out of the box. If you need something different, you can also 
-write [custom policies](https://github.com/Download/undertow-cors-filter/blob/master/README.md#custom-policies).
+write [custom policies](https://github.com/Download/undertow-cors-filter#custom-policies).
 
 ### AllowAll
 The simplest policy just adds CORS headers to all origins. Suitable if your API server already has strong authorization using e.g.
