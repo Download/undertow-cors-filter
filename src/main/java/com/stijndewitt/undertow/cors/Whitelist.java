@@ -82,10 +82,6 @@ public class Whitelist implements Policy {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		if (filePath != null) {
-		}
-		if (whitelist.isEmpty()) ;
 	}
 	
 	private void useDefaultWhitelist(String reason, Throwable cause) {

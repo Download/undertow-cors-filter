@@ -169,5 +169,14 @@ You should be able to write custom policies, package them as a JAR and install t
 Add a dependency to the module in this module's `module.xml` and the class should become available for use. Have a look at the
 policies available in this repo for inspiration.
 
- 
+## Issues
+Add an issue in this project's [issue tracker](https://github.com/download/undertow-cors-filter/issues)
+to let me know of any problems you find, or questions you may have.
+
+## Copyright
+Copyright 2017 by [Stijn de Witt](http://StijnDeWitt.com). Some rights reserved.
+
+## License
+Licensed under the [Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/) Open Source license.
+
 
