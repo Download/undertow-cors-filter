@@ -13,21 +13,21 @@ This project provides that solution for JBoss containers based on Undertow.
 > This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm. Tested on Wildfly 10.1.0. 
 
 ## Download
-The module zip file can be downloaded directly from Maven Central: [undertow-cors-filter-0.3.0-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.3.0/undertow-cors-filter-0.3.0-bin.zip).
+The module zip file can be downloaded directly from Maven Central: [undertow-cors-filter-0.3.1-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.3.1/undertow-cors-filter-0.3.1-bin.zip).
 
 ## Installation
 To use this filter, install it as a module in WildFly / EAP. 
 Grab the module zip file from Maven Central and unzip it in the root of your JBoss installation folder.
 
 If everything works as planned, it will result in a folder `modules/com/stijndewitt/undertow/cors/main`
-in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.3.0.jar` and a 
+in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.3.1.jar` and a 
 `module.xml` file with this content:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.0" name="com.stijndewitt.undertow.cors">
   <resources>
-    <resource-root path="undertow-cors-filter-0.3.0.jar"/>
+    <resource-root path="undertow-cors-filter-0.3.1.jar"/>
   </resources>
   <dependencies>
     <module name="io.undertow.core"/>
