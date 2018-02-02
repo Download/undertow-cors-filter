@@ -13,21 +13,21 @@ This project provides that solution for JBoss containers based on Undertow.
 > This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm. Tested on Wildfly 10.1.0. 
 
 ## Download
-The module zip file can be downloaded directly from Maven Central: [undertow-cors-filter-0.2.1-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.2.1/undertow-cors-filter-0.2.1-bin.zip).
+The module zip file can be downloaded directly from Maven Central: [undertow-cors-filter-0.3.0-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.3.0/undertow-cors-filter-0.3.0-bin.zip).
 
 ## Installation
 To use this filter, install it as a module in WildFly / EAP. 
 Grab the module zip file from Maven Central and unzip it in the root of your JBoss installation folder.
 
 If everything works as planned, it will result in a folder `modules/com/stijndewitt/undertow/cors/main`
-in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.2.1.jar` and a 
+in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.3.0.jar` and a 
 `module.xml` file with this content:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.0" name="com.stijndewitt.undertow.cors">
   <resources>
-    <resource-root path="undertow-cors-filter-0.2.1.jar"/>
+    <resource-root path="undertow-cors-filter-0.3.0.jar"/>
   </resources>
   <dependencies>
     <module name="io.undertow.core"/>
@@ -54,6 +54,35 @@ Then, add a `filter-ref` to the `host` element (still in `standalone.xml`):
 </host>
 ```
 
+### A complete example configuration
+For your copy-paste convenience, here is a complete filter configuration that has all possible parameters:
+
+```xml
+<filters>
+  <filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
+    <!-- which requests should be filtered? defaults to "^.*$", matching all requests -->
+    <param name="urlPattern" value="^/api/.*$" />
+    
+    <!-- which policy should be used? defaults to AllowAll -->
+    <!-- param name="policyClass"       value="com.stijndewitt.undertow.cors.AllowAll" /-->
+    <!-- alternative policy: AllowMatching -->
+    <!-- param name="policyClass"      value="com.stijndewitt.undertow.cors.AllowMatching" /-->
+    <!-- param name="policyParam"      value="^http(s)?://(www\.)?example\.(com|org)$" /-->
+    <!-- alternative policy: Whitelist -->
+    <!-- param name="policyClass"      value="com.stijndewitt.undertow.cors.Whitelist" /-->
+    <!-- param name="policyParam"      value="${jboss.server.data.dir}/whitelist.txt" /-->
+    
+    <!-- which CORS headers should be set? -->
+    <!-- param name="exposeHeaders"    value="Accept-Ranges,Content-Length,Content-Range,ETag,Link,Server,X-Total-Count" /-->
+    <!-- param name="maxAge"           value="864000" /-->
+    <!-- param name="allowCredentials" value="true" /-->
+    <!-- param name="allowMethods"     value="DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" /-->
+    <!-- param name="allowHeaders"     value="Authorization,Content-Type,Link,X-Total-Count,Range" /-->
+  </filter>
+</filters>
+
+```
+
 ### urlPattern
 Make sure to configure the `urlPattern` to match those URLs that the filter should be applied to. In the example above,
 it is configured to match any URLs starting with `/api`. The url pattern is matched agains the URL without scheme/hostname/port.
@@ -67,13 +96,13 @@ This configuration is therefore effectively the same as the snippet we saw befor
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-    <param name="urlPattern" value="^/api/.*">
+    <param name="urlPattern" value="^/api/.*" />
     <param name="policyClass" value="com.stijndewitt.undertow.cors.AllowAll" />
   </filter>
 </filters>
 ```
 
-See the section named [Policies](https://github.com/Download/undertow-cors-filter#policies) for more information.
+See the section named [Policies](https://github.com/download/undertow-cors-filter#policies) for more information.
 
 ### policyParam
 A single string parameter which is used to pass configuration info to the selected policy. Ignored for `AllowAll`, but used by 
@@ -83,7 +112,7 @@ matching the regex will be allowed:
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-    <param name="urlPattern" value="^/api/.*">
+    <param name="urlPattern" value="^/api/.*" />
     <param name="policyClass" value="com.stijndewitt.undertow.cors.AllowMatching" />
     <param name="policyParam" value="^http(s)?://(www\.)?example\.(com|org)$" />
   </filter>
@@ -102,6 +131,7 @@ This configuration will add CORS headers to any requests with a path starting wi
 * https://www.example.org
 
 ### allowCredentials
+
 This configuration parameter allows you to set the value of the [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Allow-Credentials) header.
 
 ### allowHeaders
@@ -169,6 +199,10 @@ You should be able to write custom policies, package them as a JAR and install t
 Add a dependency to the module in this module's `module.xml` and the class should become available for use. Have a look at the
 policies available in this repo for inspiration.
 
+#### Share your Policy
+Wrote a great Policy class? Share it back! Create a PR on this project that adds your Policy. Don't forget to add 
+it to this README as well!
+
 ## Issues
 Add an issue in this project's [issue tracker](https://github.com/download/undertow-cors-filter/issues)
 to let me know of any problems you find, or questions you may have.
@@ -178,5 +212,3 @@ Copyright 2017 by [Stijn de Witt](http://StijnDeWitt.com). Some rights reserved.
 
 ## License
 Licensed under the [Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/) Open Source license.
-
-

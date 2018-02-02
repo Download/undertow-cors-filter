@@ -43,34 +43,62 @@ import io.undertow.util.HttpString;
 ...
 &lt;filters&gt;
   &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
-    &lt;param name="urlPattern" value="^/api/.*"&gt;
-
-    &lt;param name="policyClass" value="com.stijndewitt.undertow.cors.AllowAll" /&gt;
-
-    &lt;!-- param name="policyClass" value="com.stijndewitt.undertow.cors.AllowMatching" / --&gt;
-    &lt;!-- param name="policyParam" value="^http(s)?://(www\.)?example\.(com|org)$" / --&gt;
-	
-    &lt;!-- param name="policyClass" value="com.stijndewitt.undertow.cors.Whitelist" / --&gt;
-    &lt;!-- param name="policyParam" value="${jboss.server.data.dir}/whitelist.txt" / --&gt;
+    &lt;!-- which requests should be filtered? defaults to {@code DEFAULT_URL_PATTERN}, matching all requests --&gt;
+    &lt;param name="urlPattern" value="^/api/.*" /&gt;
+    
+    &lt;!-- which policy should be used? defaults to AllowAll --&gt;
+    &lt;!-- param name="policyClass"       value="com.stijndewitt.undertow.cors.AllowAll" /--&gt;
+    &lt;!-- alternative policy: AllowMatching --&gt;
+    &lt;!-- param name="policyClass"      value="com.stijndewitt.undertow.cors.AllowMatching" /--&gt;
+    &lt;!-- param name="policyParam"      value="^http(s)?://(www\.)?example\.(com|org)$" /--&gt;
+    &lt;!-- alternative policy: Whitelist --&gt;
+    &lt;!-- param name="policyClass"      value="com.stijndewitt.undertow.cors.Whitelist" /--&gt;
+    &lt;!-- param name="policyParam"      value="${jboss.server.data.dir}/whitelist.txt" /--&gt;
+    
+    &lt;!-- which CORS headers should be set? defaults are listed as values. --&gt;
+    &lt;!-- param name="exposeHeaders"    value="Accept-Ranges,Content-Length,Content-Range,ETag,Link,Server,X-Total-Count" /--&gt;
+    &lt;!-- param name="maxAge"           value="864000" /--&gt;
+    &lt;!-- param name="allowCredentials" value="true" /--&gt;
+    &lt;!-- param name="allowMethods"     value="DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" /--&gt;
+    &lt;!-- param name="allowHeaders"     value="Authorization,Content-Type,Link,X-Total-Count,Range" /--&gt;
   &lt;/filter&gt;
 &lt;/filters&gt;</code></pre>
  * 
- * <p>The commented out stuff illustrates alternatives to the default policy of AllowAll.</p>
+ * <p>The commented out policyClass and policyParam combinations illustrate alternatives to the default 
+ *   policy of AllowAll. The commented out headers illustrate how to configure the CORS headers to be set. 
+ *   Values listed are the defaults that are used when the param is not set.</p>
  * 
  * <p>Finally, add a {@code filter-ref} to the {@code host} element (still in standalone.xml):</p>
  *
  * <pre><code>
 &lt;host name="default-host" alias="localhost"&gt;
-	&lt;filter-ref name="cors-filter"/&gt;
+  &lt;filter-ref name="cors-filter"/&gt;
 &lt;/host&gt;</code></pre>
  *
  * <p>Obviously this filter is container specific. It should work in containers based on Undertow.
  * This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm.</p>
  * 
+ * @see <a href="http://undertow.io/javadoc/1.4.x/io/undertow/server/HttpHandler.html">HttpHandler (Undertow 1.4.x API docs)</a>
  * @see Policy
  * @see AllowAll
  * @see AllowMatching
  * @see Whitelist
+ * @see #setUrlPattern
+ * @see #DEFAULT_URL_PATTERN
+ * @see #setPolicyClass
+ * @see #DEFAULT_POLICY_CLASS
+ * @see #setPolicyParam
+ * @see #DEFAULT_POLICY_PARAM
+ * @see #setAllowCredentials
+ * @see #DEFAULT_ALLOW_CREDENTIALS
+ * @see #setAllowHeaders
+ * @see #DEFAULT_ALLOW_HEADERS
+ * @see #setAllowMethods
+ * @see #DEFAULT_ALLOW_METHODS
+ * @see #setExposeHeaders
+ * @see #DEFAULT_EXPOSE_HEADERS
+ * @see #setMaxAge
+ * @see #DEFAULT_MAX_AGE
  */
 public class Filter implements HttpHandler {
 	private static final Logger LOG = Logger.getLogger(Filter.class.getName());
@@ -271,6 +299,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setUrlPattern(String pattern) {
 		urlPattern = pattern;
+		LOG.config("undertow-cors-filter: urlPattern=" + pattern);
 	}
 
 	/**
@@ -301,6 +330,7 @@ public class Filter implements HttpHandler {
 	public void setPolicyClass(String name) {
 		policy = null;
 		policyClass = name;
+		LOG.config("undertow-cors-filter: policyClass=" + name);
 	}
 
 	/**
@@ -333,6 +363,7 @@ public class Filter implements HttpHandler {
 	public void setPolicyParam(String value) {
 		policy = null;
 		policyParam = value;
+		LOG.config("undertow-cors-filter: policyParam=" + value);
 	}
 
 	/**
@@ -361,6 +392,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setExposeHeaders(String value) {
 		exposeHeaders = value;
+		LOG.config("undertow-cors-filter: exposeHeaders=" + value);
 	}
 
 	/**
@@ -386,6 +418,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setMaxAge(String value) {
 		maxAge = value;
+		LOG.config("undertow-cors-filter: maxAge=" + value);
 	}
 
 	/**
@@ -411,6 +444,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setAllowCredentials(String value) {
 		allowCredentials = value;
+		LOG.config("undertow-cors-filter: allowCredentials=" + value);
 	}
 
 	/**
@@ -430,12 +464,18 @@ public class Filter implements HttpHandler {
 	 * 
 	 * <p>This method is called by Wildfly / JBoss EAP based on the config in standalone.xml.</p>
 	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+	 * 
 	 * @param value The new value for the header, possibly {@code null}.
 	 * 
 	 * @see #getAllowMethods
 	 */
 	public void setAllowMethods(String value) {
 		allowMethods = value;
+		LOG.config("undertow-cors-filter: allowMethods=" + value);
 	}
 
 	/**
@@ -461,6 +501,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setAllowHeaders(String value) {
 		allowHeaders = value;
+		LOG.config("undertow-cors-filter: allowHeaders=" + value);
 	}
 
 	/**
@@ -483,17 +524,20 @@ public class Filter implements HttpHandler {
 	 * @return The created policy, or {@code null} if the policy class could not be found or instantiation failed.
 	 */
 	public Policy createPolicy(String name, String param) {
-		Class<? extends Policy> P = null; 
+		Class<? extends Policy> P = null;
+		Policy result = null;
 		try {P = Class.forName(name).asSubclass(Policy.class);} 
 		catch (ClassNotFoundException e) {
 			LOG.log(Level.SEVERE, "undertow-cors-filter: Policy class " + name + " not found.", e);
 			return null;
 		}
-		try {return P.getConstructor(String.class).newInstance(policyParam);} 
+		try {result = P.getConstructor(String.class).newInstance(policyParam);} 
 		catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			LOG.log(Level.SEVERE, "undertow-cors-filter: Unable to instantiate policy class " + name + " with parameter \"" + policyParam + "\".", e);
 			return null;
 		}
+		LOG.fine("undertow-cors-filter: Created policy from policy class " + name + " with param \"" + param + "\".");
+		return result;
 	}
 
 	/**

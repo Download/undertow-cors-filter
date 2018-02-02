@@ -26,8 +26,10 @@ public class AllowMatching implements Policy {
 	/**
 	 * Creates a new {@code AllowMatching} policy.
 	 * 
-	 * @param param The regex string parameter, may be {@code null} or empty.
+	 * @param param The regex string parameter, may be {@code null} or empty, in which case
+	 * the {@code DEFAULT_MATCH_PATTERN} will be used, that matches all domains.
 	 * 
+	 * @see #DEFAULT_MATCH_PATTERN
 	 * @see Filter#getPolicyClass
 	 * @see Filter#setPolicyClass
 	 * @see Filter#getPolicyParam
@@ -52,7 +54,7 @@ public class AllowMatching implements Policy {
 	 * @see #getMatchPattern
 	 */
 	@Override public boolean isAllowed(String origin) {
-		return origin != null && pattern.matcher(origin).matches();
+		return origin != null && getMatchPattern().matcher(origin).matches();
 	}
 	
 	/**

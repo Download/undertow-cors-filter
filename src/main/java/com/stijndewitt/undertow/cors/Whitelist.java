@@ -47,10 +47,13 @@ public class Whitelist implements Policy {
 	private WatchKey watchKey;
 
 	/**
-	 * Creates a new {@code AllowMatching} policy.
+	 * Creates a new {@code Whitelist} policy.
 	 * 
-	 * @param param The regex string parameter, may be {@code null} or empty.
+	 * @param param The filepath string parameter. When empty or {@code null}, a default
+	 * whitelist will be used containing only the {@code DEFAULT_MATCH_PATTERN} which
+	 * allows all domains.
 	 * 
+	 * @see #DEFAULT_MATCH_PATTERN
 	 * @see Filter#getPolicyClass
 	 * @see Filter#setPolicyClass
 	 * @see Filter#getPolicyParam
