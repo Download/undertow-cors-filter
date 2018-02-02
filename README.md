@@ -41,7 +41,7 @@ To make the installed filter available inside the container, add a `filter` to t
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-    <param name="urlPattern" value="^/api/.*">
+    <param name="urlPattern" value="^/api/.*" />
   </filter>
 </filters>
 ```
