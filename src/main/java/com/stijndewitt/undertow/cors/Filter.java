@@ -43,7 +43,7 @@ import io.undertow.util.HttpString;
 ...
 &lt;filters&gt;
   &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
-    &lt;!-- which requests should be filtered? defaults to {@code DEFAULT_URL_PATTERN}, matching all requests --&gt;
+    &lt;!-- which requests should be filtered? defaults to "^.*$", matching all requests --&gt;
     &lt;param name="urlPattern" value="^/api/.*" /&gt;
     
     &lt;!-- which policy should be used? defaults to AllowAll --&gt;
@@ -288,9 +288,22 @@ public class Filter implements HttpHandler {
 	}
 
 	/**
-	 * Sets the URL pattern that determines which requests will be filtered.
+	 * Sets the <code>urlPattern</code> that determines which requests will be filtered.
 	 * 
 	 * <p>This method will be called by undertow with the value of the parameter in the config.</p>
+	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="urlPattern" value="^/api/.*" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
 	 * 
 	 * @param pattern The url pattern, which should be a valid regex string or {@code null}.
 	 * 
@@ -318,6 +331,19 @@ public class Filter implements HttpHandler {
 	 * Sets the class name of the selected policy class.
 	 * 
 	 * <p>This method will be called by undertow with the value of the parameter in the config.</p>
+	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="policyClass" value="com.stijndewitt.undertow.cors.AllowMatching" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
 	 * 
 	 * @param name The name of the policy class to use, or {@code null}.
 	 * 
@@ -355,6 +381,19 @@ public class Filter implements HttpHandler {
 	 * 
 	 * <p>The policy parameter is a String that is passed to the constructor when instantiating the policy class.</p>
 	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="policyParam" value="^http(s)?://(www\.)?example\.(com|org)$" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
+	 * 
 	 * @param value The string value, may be {@code null}.
 	 * 
 	 * @see #getPolicyParam
@@ -386,6 +425,19 @@ public class Filter implements HttpHandler {
 	 * 
 	 * <p>This method is called by Wildfly / JBoss EAP based on the config in standalone.xml.</p>
 	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="exposeHeaders" value="Accept-Ranges,Content-Length,Content-Range,ETag,Link,Server,X-Total-Count" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
+	 * 
 	 * @param value The new value for the header, possibly {@code null}.
 	 * 
 	 * @see #getExposeHeaders
@@ -412,6 +464,19 @@ public class Filter implements HttpHandler {
 	 * 
 	 * <p>This method is called by Wildfly / JBoss EAP based on the config in standalone.xml.</p>
 	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="maxAge" value="864000" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
+	 * 
 	 * @param value The new value for the header, possibly {@code null}.
 	 * 
 	 * @see #getMaxAge
@@ -437,6 +502,19 @@ public class Filter implements HttpHandler {
 	 * Sets the {@code allowCredentials}.
 	 * 
 	 * <p>This method is called by Wildfly / JBoss EAP based on the config in standalone.xml.</p>
+	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="allowCredentials" value="true" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
 	 * 
 	 * @param value The new value for the header, possibly {@code null}.
 	 * 
@@ -468,6 +546,14 @@ public class Filter implements HttpHandler {
 	 *   definition, like this:</p>
 	 *   
 	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="allowMethods" value="DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
 	 * 
 	 * @param value The new value for the header, possibly {@code null}.
 	 * 
@@ -494,6 +580,19 @@ public class Filter implements HttpHandler {
 	 * Sets the {@code allowHeaders}.
 	 * 
 	 * <p>This method is called by Wildfly / JBoss EAP based on the config in standalone.xml.</p>
+	 * 
+	 * <p>To configure this parameter, specify a <code>param</code> element in the <code>filter</code>
+	 *   definition, like this:</p>
+	 *   
+	 * <pre><code>
+&lt;filters&gt;
+  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+    ...
+    &lt;param name="allowHeaders" value="Authorization,Content-Type,Link,X-Total-Count,Range" /&gt;
+    ...
+  &lt;/filter&gt;
+&lt;/filters&gt;
+</code></pre>
 	 * 
 	 * @param value The new value for the header, possibly {@code null}.
 	 * 
