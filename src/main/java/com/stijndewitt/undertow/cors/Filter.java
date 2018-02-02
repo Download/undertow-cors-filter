@@ -26,7 +26,7 @@ import io.undertow.util.HttpString;
  * the version number) in a folder {@code modules/com/stijndewitt/undertow/cors/main} in the root
  * of the server. Then add a module.xml with this content:</p>
  * 
- * <code><pre>
+ * <pre><code>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;module xmlns="urn:jboss:module:1.0" name="com.stijndewitt.undertow.cors"&gt;
   &lt;resources&gt;
@@ -35,13 +35,13 @@ import io.undertow.util.HttpString;
   &lt;dependencies&gt;
     &lt;module name="io.undertow.core"/&gt;
   &lt;/dependencies&gt;
-&lt;/module></pre></code>
+&lt;/module&gt;</code></pre>
  *
  * <p>Next, add a filter to the {@code filters} section of {@code standalone.xml}:</p>
  * 
- * <code><pre>
+ * <pre><code>
 ...
-&lt;filters>
+&lt;filters&gt;
   &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     &lt;param name="urlPattern" value="^/api/.*"&gt;
 
@@ -53,16 +53,16 @@ import io.undertow.util.HttpString;
     &lt;!-- param name="policyClass" value="com.stijndewitt.undertow.cors.Whitelist" / --&gt;
     &lt;!-- param name="policyParam" value="${jboss.server.data.dir}/whitelist.txt" / --&gt;
   &lt;/filter&gt;
-&lt;/filters&gt;</pre></code>
+&lt;/filters&gt;</code></pre>
  * 
  * <p>The commented out stuff illustrates alternatives to the default policy of AllowAll.</p>
  * 
  * <p>Finally, add a {@code filter-ref} to the {@code host} element (still in standalone.xml):</p>
  *
- * <code><pre>
+ * <pre><code>
 &lt;host name="default-host" alias="localhost"&gt;
 	&lt;filter-ref name="cors-filter"/&gt;
-&lt;/host&gt;</pre></code>
+&lt;/host&gt;</code></pre>
  *
  * <p>Obviously this filter is container specific. It should work in containers based on Undertow.
  * This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm.</p>
@@ -250,7 +250,7 @@ public class Filter implements HttpHandler {
 	/**
 	 * Constructs the filter.
 	 * 
-	 * </p>This constructor will be called by Undertow to construct the CORS filter.</p>
+	 * <p>This constructor will be called by Undertow to construct the CORS filter.</p>
 	 * 
 	 * @param next The next http handler.
 	 */

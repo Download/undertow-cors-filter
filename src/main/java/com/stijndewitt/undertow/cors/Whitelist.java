@@ -134,8 +134,6 @@ public class Whitelist implements Policy {
 	 * @param origin The origin String, may be {@code null}.
 	 * 
 	 * @return {@code true} if the given {@code origin} matched a pattern in the whitelist, {@code false} otherwise.
-	 * 
-	 * @see #getWh
 	 */
 	@Override public boolean isAllowed(String origin) {
 		if (origin == null) return false;
