@@ -7,7 +7,9 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>modules</directory>
+      <directory>${basedir}/target/modules/com/stijndewitt/undertow/cors/main</directory>
+      <outputDirectory>modules/com/stijndewitt/undertow/cors/main</outputDirectory>
+      <includes><include>module.xml</include></includes>
     </fileSet>
     <fileSet>
       <directory>${basedir}/target</directory>

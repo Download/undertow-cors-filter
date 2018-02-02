@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.stijndewitt.undertow.cors</groupId>
 	<artifactId>undertow-cors-filter</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2</version>
 	<name>undertow-cors-filter</name>
 	<description>A filter to enable correct handling of CORS headers in undertow-based servers (Wildfly, JBOSS EAP)</description>
 	<url>https://github.com/download/undertow-cors-filter</url>
@@ -28,7 +28,7 @@
 			<url>https://creativecommons.org/licenses/by/4.0/</url>
 		</license>
 	</licenses>
-	<!--  packaging>jar</packaging -->
+	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -55,16 +55,16 @@
 									<includes><include>${project.build.finalName}.jar</include></includes>
 									<filtering>false</filtering>
 								</resource>
-								<!-- resource>
+								<resource>
 									<directory>${basedir}/modules/com/stijndewitt/undertow/cors/main</directory>
 									<filtering>true</filtering>
-								</resource -->
+								</resource>
 							</resources>              
 						</configuration>            
 					</execution>
 				</executions>
 			</plugin>
-      
+
 			<!-- creates the module zip file (see also zip.xml) -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
