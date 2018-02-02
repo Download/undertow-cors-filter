@@ -659,8 +659,10 @@ public class Filter implements HttpHandler {
 	    }
 		
 		// This code is executed by a worker thread. It's save to do blocking I/O here.
+		String url = url(exchange);
+		LOG.fine("undertow-cors-filter: handling request " + url);
 		if (pattern == null) pattern = Pattern.compile(urlPattern);
-		if (pattern.matcher(url(exchange)).matches()) {
+		if (pattern.matcher(url).matches()) {
 			String origin = origin(exchange);
 			boolean allowed = applyPolicy(exchange, origin);
 			if (LOG.isLoggable(Level.INFO)) {
