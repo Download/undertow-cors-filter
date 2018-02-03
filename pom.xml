@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.stijndewitt.undertow.cors</groupId>
 	<artifactId>undertow-cors-filter</artifactId>
-	<version>0.3.3</version>
+	<version>0.4.0</version>
 	<name>undertow-cors-filter</name>
 	<description>A filter to enable correct handling of CORS headers in undertow-based servers (Wildfly, JBOSS EAP)</description>
 	<url>https://github.com/download/undertow-cors-filter</url>

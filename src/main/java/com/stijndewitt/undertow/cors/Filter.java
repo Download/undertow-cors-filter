@@ -44,7 +44,7 @@ import io.undertow.util.HttpString;
 &lt;filters&gt;
   &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     &lt;!-- which requests should be filtered? defaults to "^.*$", matching all requests --&gt;
-    &lt;param name="urlPattern" value="^/api/.*" /&gt;
+    &lt;param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /&gt;
     
     &lt;!-- which policy should be used? defaults to AllowAll --&gt;
     &lt;!-- param name="policyClass"       value="com.stijndewitt.undertow.cors.AllowAll" /--&gt;
@@ -63,6 +63,8 @@ import io.undertow.util.HttpString;
     &lt;!-- param name="allowHeaders"     value="Authorization,Content-Type,Link,X-Total-Count,Range" /--&gt;
   &lt;/filter&gt;
 &lt;/filters&gt;</code></pre>
+ * 
+ * <p>The urlPattern is set to a regex and only requests whose URL matches the regex are filtered.</p>
  * 
  * <p>The commented out policyClass and policyParam combinations illustrate alternatives to the default 
  *   policy of AllowAll. The commented out headers illustrate how to configure the CORS headers to be set. 
@@ -299,7 +301,7 @@ public class Filter implements HttpHandler {
 &lt;filters&gt;
   &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
-    &lt;param name="urlPattern" value="^/api/.*" /&gt;
+    &lt;param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /&gt;
     ...
   &lt;/filter&gt;
 &lt;/filters&gt;
@@ -312,7 +314,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setUrlPattern(String pattern) {
 		urlPattern = pattern;
-		LOG.config("undertow-cors-filter: urlPattern=" + pattern);
+		LOG.config("undertow-cors-filter: urlPattern=" + getUrlPattern());
 	}
 
 	/**
@@ -356,7 +358,7 @@ public class Filter implements HttpHandler {
 	public void setPolicyClass(String name) {
 		policy = null;
 		policyClass = name;
-		LOG.config("undertow-cors-filter: policyClass=" + name);
+		LOG.config("undertow-cors-filter: policyClass=" + getPolicyClass());
 	}
 
 	/**
@@ -402,7 +404,7 @@ public class Filter implements HttpHandler {
 	public void setPolicyParam(String value) {
 		policy = null;
 		policyParam = value;
-		LOG.config("undertow-cors-filter: policyParam=" + value);
+		LOG.config("undertow-cors-filter: policyParam=" + getPolicyParam());
 	}
 
 	/**
@@ -444,7 +446,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setExposeHeaders(String value) {
 		exposeHeaders = value;
-		LOG.config("undertow-cors-filter: exposeHeaders=" + value);
+		LOG.config("undertow-cors-filter: exposeHeaders=" + getExposeHeaders());
 	}
 
 	/**
@@ -483,7 +485,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setMaxAge(String value) {
 		maxAge = value;
-		LOG.config("undertow-cors-filter: maxAge=" + value);
+		LOG.config("undertow-cors-filter: maxAge=" + getMaxAge());
 	}
 
 	/**
@@ -522,7 +524,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setAllowCredentials(String value) {
 		allowCredentials = value;
-		LOG.config("undertow-cors-filter: allowCredentials=" + value);
+		LOG.config("undertow-cors-filter: allowCredentials=" + getAllowCredentials());
 	}
 
 	/**
@@ -561,7 +563,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setAllowMethods(String value) {
 		allowMethods = value;
-		LOG.config("undertow-cors-filter: allowMethods=" + value);
+		LOG.config("undertow-cors-filter: allowMethods=" + getAllowMethods());
 	}
 
 	/**
@@ -600,7 +602,7 @@ public class Filter implements HttpHandler {
 	 */
 	public void setAllowHeaders(String value) {
 		allowHeaders = value;
-		LOG.config("undertow-cors-filter: allowHeaders=" + value);
+		LOG.config("undertow-cors-filter: allowHeaders=" + getAllowHeaders());
 	}
 
 	/**
@@ -660,14 +662,16 @@ public class Filter implements HttpHandler {
 		
 		// This code is executed by a worker thread. It's save to do blocking I/O here.
 		String url = url(exchange);
-		LOG.fine("undertow-cors-filter: handling request " + url);
 		if (pattern == null) pattern = Pattern.compile(urlPattern);
 		if (pattern.matcher(url).matches()) {
+			LOG.fine("undertow-cors-filter: handling request " + url);
 			String origin = origin(exchange);
 			boolean allowed = applyPolicy(exchange, origin);
 			if (LOG.isLoggable(Level.INFO)) {
 				LOG.info("undertow-cors-filter: CORS headers " + (allowed ? "" : "NOT ") + "added for origin " + origin);
 			}
+		} else {
+			LOG.fine("undertow-cors-filter: NOT handling request " + url + ". Does not match urlPattern \"" + urlPattern + "\".");
 		}
 		next.handleRequest(exchange);
 	}
@@ -714,7 +718,7 @@ public class Filter implements HttpHandler {
 	 * @return The request URL, never {@code null}.
 	 */
 	protected String url(HttpServerExchange exchange) {
-		return exchange.getRequestURL() + (exchange.getQueryString() == null ? "" : "?" + exchange.getQueryString());  
+		return exchange.getRequestURL() + (exchange.getQueryString() == null || exchange.getQueryString().isEmpty() ? "" : "?" + exchange.getQueryString());  
 	}
 	
 	/**

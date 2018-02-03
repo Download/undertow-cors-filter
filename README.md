@@ -13,21 +13,21 @@ This project provides that solution for JBoss containers based on Undertow.
 > This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm. Tested on Wildfly 10.1.0. 
 
 ## Download
-The module zip file can be downloaded directly from Maven Central: **[undertow-cors-filter-0.3.3-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.3.3/undertow-cors-filter-0.3.3-bin.zip)**.
+The module zip file can be downloaded directly from Maven Central: **[undertow-cors-filter-0.4.0-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.4.0/undertow-cors-filter-0.4.0-bin.zip)**.
 
 ## Installation
 To use this filter, install it as a module in WildFly / EAP. 
 Grab the module zip file from Maven Central and unzip it in the root of your JBoss installation folder.
 
 If everything works as planned, it will result in a folder `modules/com/stijndewitt/undertow/cors/main`
-in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.3.3.jar` and a 
+in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.4.0.jar` and a 
 `module.xml` file with this content:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.0" name="com.stijndewitt.undertow.cors">
   <resources>
-    <resource-root path="undertow-cors-filter-0.3.3.jar"/>
+    <resource-root path="undertow-cors-filter-0.4.0.jar"/>
   </resources>
   <dependencies>
     <module name="io.undertow.core"/>
@@ -41,7 +41,7 @@ To make the installed filter available inside the container, add a `filter` to t
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-    <param name="urlPattern" value="^/api/.*" />
+  
   </filter>
 </filters>
 ```
@@ -54,14 +54,17 @@ Then, add a `filter-ref` to the `host` element (still in `standalone.xml`):
 </host>
 ```
 
+You can modify the default behavior of the filter by adding `<param>` elements to the `<filter>` configuration.
+
 ### A complete example configuration
-For your copy-paste convenience, here is a complete filter configuration that has all possible parameters:
+For your copy-paste convenience, here is a complete filter configuration that has all possible parameters. 
+Remove the comments for those parameters that you need.
 
 ```xml
 <filters>
   <filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
     <!-- which requests should be filtered? defaults to "^.*$", matching all requests -->
-    <param name="urlPattern" value="^/api/.*$" />
+    <!-- param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /-->
     
     <!-- which policy should be used? defaults to AllowAll -->
     <!-- param name="policyClass"       value="com.stijndewitt.undertow.cors.AllowAll" /-->
@@ -84,9 +87,16 @@ For your copy-paste convenience, here is a complete filter configuration that ha
 ```
 
 ### urlPattern
-Make sure to configure the `urlPattern` to match those URLs that the filter should be applied to. In the example above,
-it is configured to match any URLs starting with `/api`. The url pattern is matched agains the URL without scheme/hostname/port.
+The url pattern is matched agains the full URL of the request. Requests that do not match are not filtered.
 If this parameter is not set, the filter will apply for all requests.
+
+Make sure to configure the `urlPattern` to match those URLs that the filter should be applied to. In the example above,
+it is configured to match any URLs starting with `"http://"` or `"https://"`, followed by a host and then optionally a port,
+followed by an optional context path and then the path segment `"/api"`, optionally followed by a slash and more stuff.
+The regex is a little complicated but if you have your API mounted in the root of your webapp, then replacing `"api"` in
+the example with whatever name your API is mounted under will give you a regex that works for all hosts and all ports under 
+http and https, whether your application is running under a context path or directly under the root. Modify the regex
+as you see fit. 
 
 ### policyClass
 The parameter `policyClass` can be used to select one of the available policies for determining whether a certain origin should 
@@ -96,7 +106,6 @@ This configuration is therefore effectively the same as the snippet we saw befor
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-    <param name="urlPattern" value="^/api/.*" />
     <param name="policyClass" value="com.stijndewitt.undertow.cors.AllowAll" />
   </filter>
 </filters>
@@ -112,14 +121,13 @@ matching the regex will be allowed:
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-    <param name="urlPattern" value="^/api/.*" />
     <param name="policyClass" value="com.stijndewitt.undertow.cors.AllowMatching" />
     <param name="policyParam" value="^http(s)?://(www\.)?example\.(com|org)$" />
   </filter>
 </filters>
 ```
 
-This configuration will add CORS headers to any requests with a path starting with `/api`, for the following origins:
+This configuration will add CORS headers to any requests from the following origins:
 
 * http://example.com
 * https://example.com
