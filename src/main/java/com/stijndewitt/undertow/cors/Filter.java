@@ -42,7 +42,7 @@ import io.undertow.util.HttpString;
  * <pre><code>
 ...
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     &lt;!-- which requests should be filtered? defaults to "^.*$", matching all requests --&gt;
     &lt;param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /&gt;
     
@@ -74,7 +74,7 @@ import io.undertow.util.HttpString;
  *
  * <pre><code>
 &lt;host name="default-host" alias="localhost"&gt;
-  &lt;filter-ref name="cors-filter"/&gt;
+  &lt;filter-ref name="undertow-cors-filter"/&gt;
 &lt;/host&gt;</code></pre>
  *
  * <p>Obviously this filter is container specific. It should work in containers based on Undertow.
@@ -299,7 +299,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /&gt;
     ...
@@ -339,7 +339,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="policyClass" value="com.stijndewitt.undertow.cors.AllowMatching" /&gt;
     ...
@@ -388,7 +388,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="policyParam" value="^http(s)?://(www\.)?example\.(com|org)$" /&gt;
     ...
@@ -432,7 +432,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="exposeHeaders" value="Accept-Ranges,Content-Length,Content-Range,ETag,Link,Server,X-Total-Count" /&gt;
     ...
@@ -471,7 +471,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="maxAge" value="864000" /&gt;
     ...
@@ -510,7 +510,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="allowCredentials" value="true" /&gt;
     ...
@@ -549,7 +549,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="allowMethods" value="DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" /&gt;
     ...
@@ -588,7 +588,7 @@ public class Filter implements HttpHandler {
 	 *   
 	 * <pre><code>
 &lt;filters&gt;
-  &lt;filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
+  &lt;filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors"&gt;
     ...
     &lt;param name="allowHeaders" value="Authorization,Content-Type,Link,X-Total-Count,Range" /&gt;
     ...

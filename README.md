@@ -62,7 +62,7 @@ Remove the comments for those parameters that you need.
 
 ```xml
 <filters>
-  <filter name="cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
+  <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
     <!-- which requests should be filtered? defaults to "^.*$", matching all requests -->
     <!-- param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /-->
     
