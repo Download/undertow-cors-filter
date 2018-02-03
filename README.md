@@ -1,26 +1,26 @@
 # undertow-cors-filter
 **A filter to enable correct handling of CORS headers in undertow-based servers (Wildfly, JBOSS EAP)**
 
-There seems to be an oversight in Java EE's filter handling, because when the container is configured with 
-container managed authorization and a user that is not (yet) authenticated attempts to access a protected 
-resource, the container intercepts that request and sends a 401 response. That response does not have CORS 
-headers, but for some reason cannot be filtered. Neither with a Jax-Rs ContainerResponseFilter, not with a 
+There seems to be an oversight in Java EE's filter handling, because when the container is configured with
+container managed authorization and a user that is not (yet) authenticated attempts to access a protected
+resource, the container intercepts that request and sends a 401 response. That response does not have CORS
+headers, but for some reason cannot be filtered. Neither with a Jax-Rs ContainerResponseFilter, not with a
 plain servlet filter. A container-specific solution seems to be the only way to get the job done.
 
 This project provides that solution for JBoss containers based on Undertow.
 
 > Obviously this filter is container specific. It should work in containers based on Undertow.
-> This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm. Tested on Wildfly 10.1.0. 
+> This includes Wildfly 8/9/10, JBoss AS, JBoss EAP and Wildfly Swarm. Tested on Wildfly 10.1.0.
 
 ## Download
 The module zip file can be downloaded directly from Maven Central: **[undertow-cors-filter-0.4.0-bin.zip](https://repo1.maven.org/maven2/com/stijndewitt/undertow/cors/undertow-cors-filter/0.4.0/undertow-cors-filter-0.4.0-bin.zip)**.
 
 ## Installation
-To use this filter, install it as a module in WildFly / EAP. 
+To use this filter, install it as a module in WildFly / EAP.
 Grab the module zip file from Maven Central and unzip it in the root of your JBoss installation folder.
 
 If everything works as planned, it will result in a folder `modules/com/stijndewitt/undertow/cors/main`
-in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.4.0.jar` and a 
+in your WildFly / EAP installation folder containing a JAR file `undertow-cors-filter-0.4.0.jar` and a
 `module.xml` file with this content:
 
 ```xml
@@ -41,7 +41,7 @@ To make the installed filter available inside the container, add a `filter` to t
 ```xml
 <filters>
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
-  
+
   </filter>
 </filters>
 ```
@@ -57,7 +57,7 @@ Then, add a `filter-ref` to the `host` element (still in `standalone.xml`):
 You can modify the default behavior of the filter by adding `<param>` elements to the `<filter>` configuration.
 
 ### A complete example configuration
-For your copy-paste convenience, here is a complete filter configuration that has all possible parameters. 
+For your copy-paste convenience, here is a complete filter configuration that has all possible parameters.
 Remove the comments for those parameters that you need.
 
 ```xml
@@ -65,7 +65,7 @@ Remove the comments for those parameters that you need.
   <filter name="undertow-cors-filter" class-name="com.stijndewitt.undertow.cors.Filter" module="com.stijndewitt.undertow.cors">
     <!-- which requests should be filtered? defaults to "^.*$", matching all requests -->
     <!-- param name="urlPattern" value="^http(s)?://([^/]+)(:([^/]+))?(/([^/])+)?/api(/.*)?$" /-->
-    
+
     <!-- which policy should be used? defaults to AllowAll -->
     <!-- param name="policyClass"       value="com.stijndewitt.undertow.cors.AllowAll" /-->
     <!-- alternative policy: AllowMatching -->
@@ -74,7 +74,7 @@ Remove the comments for those parameters that you need.
     <!-- alternative policy: Whitelist -->
     <!-- param name="policyClass"      value="com.stijndewitt.undertow.cors.Whitelist" /-->
     <!-- param name="policyParam"      value="${jboss.server.data.dir}/whitelist.txt" /-->
-    
+
     <!-- which CORS headers should be set? values listed are the defaults -->
     <!-- param name="exposeHeaders"    value="Accept-Ranges,Content-Length,Content-Range,ETag,Link,Server,X-Total-Count" /-->
     <!-- param name="maxAge"           value="864000" /-->
@@ -94,12 +94,12 @@ Make sure to configure the `urlPattern` to match those URLs that the filter shou
 it is configured to match any URLs starting with `"http://"` or `"https://"`, followed by a host and then optionally a port,
 followed by an optional context path and then the path segment `"/api"`, optionally followed by a slash and more stuff.
 The regex is a little complicated but if you have your API mounted in the root of your webapp, then replacing `"api"` in
-the example with whatever name your API is mounted under will give you a regex that works for all hosts and all ports under 
+the example with whatever name your API is mounted under will give you a regex that works for all hosts and all ports under
 http and https, whether your application is running under a context path or directly under the root. Modify the regex
-as you see fit. 
+as you see fit.
 
 ### policyClass
-The parameter `policyClass` can be used to select one of the available policies for determining whether a certain origin should 
+The parameter `policyClass` can be used to select one of the available policies for determining whether a certain origin should
 get CORS headers added. The default policy if no `policyClass` is given is `AllowAll`, which does what it's name implies.
 This configuration is therefore effectively the same as the snippet we saw before:
 
@@ -114,7 +114,7 @@ This configuration is therefore effectively the same as the snippet we saw befor
 See the section named [Policies](https://github.com/download/undertow-cors-filter#policies) for more information.
 
 ### policyParam
-A single string parameter which is used to pass configuration info to the selected policy. Ignored for `AllowAll`, but used by 
+A single string parameter which is used to pass configuration info to the selected policy. Ignored for `AllowAll`, but used by
 the other available policies to configure the policy. For example `AllowMatching` is configured with a regex and only origins
 matching the regex will be allowed:
 
@@ -144,7 +144,7 @@ This configuration parameter allows you to set the value of the [Access-Control-
 
 ### allowHeaders
 This configuration parameter allows you to set the value of the [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Allow-Headers) header.
-	 
+
 ### allowMethods
 This configuration parameter allows you to set the value of the [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Allow-Methods) header.
 
@@ -155,7 +155,7 @@ This configuration parameter allows you to set the value of the [Access-Control-
 This configuration parameter allows you to set the value of the [Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Max-Age) header.
 
 ## Policies
-The following policies are available out of the box. If you need something different, you can also 
+The following policies are available out of the box. If you need something different, you can also
 write [custom policies](https://github.com/Download/undertow-cors-filter#custom-policies).
 
 ### AllowAll
@@ -167,14 +167,14 @@ under the user's account. If your API is not protected with cookies but with som
 To use this policy, either don't specify the `policyClass` at all, or set it's value to `com.stijndewitt.undertow.cors.AllowAll`
 
 ### AllowMatching
-This policy performs a regex match on the origin to determine whether it is allowed access. Only origins matching the regex are 
+This policy performs a regex match on the origin to determine whether it is allowed access. Only origins matching the regex are
 allowed. The `policyParam` is used to set the regex.
 
 To use this policy set the value of `policyClass` to `com.stijndewitt.undertow.cors.AllowMatching` and set the value of
 `policyParam` to the regular expression to match the origin against.
 
 ### Whitelist
-This policy performs a series of regex matches on the origin to determine whether it is allowed access. Only origins matching one of the 
+This policy performs a series of regex matches on the origin to determine whether it is allowed access. Only origins matching one of the
 regexes specified in the whitelist are allowed. The `policyParam` is used to set the absolute file path of the whitelist file.
 
 This policy is the most advanced policy available at the moment. It can be useful if you need to whitelist a large amount of domains
@@ -196,7 +196,7 @@ a hash (`#`) character or double slash (`//`) characters. For example a whitelis
 
 A watcher is set up that watches the file for changes, so you could write a new version of the file during the app's operation
 and the changes should be picked up within a few seconds. This feature depends on the WatchService API which hooks into OS file
-change notification events. Results may vary based on the OS support. 
+change notification events. Results may vary based on the OS support.
 
 To use this policy set the value of `policyClass` to `com.stijndewitt.undertow.cors.Whitelist` and set the value of
 `policyParam` to the absolute file path of the whitelist file containing the regular expressions to match the origin against.
@@ -208,8 +208,13 @@ Add a dependency to the module in this module's `module.xml` and the class shoul
 policies available in this repo for inspiration.
 
 #### Share your Policy
-Wrote a great Policy class? Share it back! Create a PR on this project that adds your Policy. Don't forget to add 
+Wrote a great Policy class? Share it back! Create a PR on this project that adds your Policy. Don't forget to add
 it to this README as well!
+
+## Credits
+I asked a [question on StackOverflow](https://stackoverflow.com/questions/35217936/add-cors-headers-to-response-of-j-security-check)
+about some requests not being intercepted when using a ServletFilter or a JAX-RS filter and the answer I got there from user
+[nfedorov](https://stackoverflow.com/users/6758880/nfedorov) lead me to create this project. So thanks again nfedorov!
 
 ## Issues
 Add an issue in this project's [issue tracker](https://github.com/download/undertow-cors-filter/issues)
