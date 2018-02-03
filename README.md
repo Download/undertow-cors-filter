@@ -75,7 +75,7 @@ Remove the comments for those parameters that you need.
     <!-- param name="policyClass"      value="com.stijndewitt.undertow.cors.Whitelist" /-->
     <!-- param name="policyParam"      value="${jboss.server.data.dir}/whitelist.txt" /-->
     
-    <!-- which CORS headers should be set? -->
+    <!-- which CORS headers should be set? values listed are the defaults -->
     <!-- param name="exposeHeaders"    value="Accept-Ranges,Content-Length,Content-Range,ETag,Link,Server,X-Total-Count" /-->
     <!-- param name="maxAge"           value="864000" /-->
     <!-- param name="allowCredentials" value="true" /-->
@@ -191,7 +191,7 @@ a hash (`#`) character or double slash (`//`) characters. For example a whitelis
 
 // blank lines are ignored
 ^http(s)?://(www\.)?example\.(com|org)$
-^http://example\\.net$
+^http://example\.net$
 ```
 
 A watcher is set up that watches the file for changes, so you could write a new version of the file during the app's operation
@@ -216,7 +216,7 @@ Add an issue in this project's [issue tracker](https://github.com/download/under
 to let me know of any problems you find, or questions you may have.
 
 ## Copyright
-Copyright 2017 by [Stijn de Witt](http://StijnDeWitt.com). Some rights reserved.
+Copyright 2018 by [Stijn de Witt](http://StijnDeWitt.com). Some rights reserved.
 
 ## License
 Licensed under the [Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/) Open Source license.
