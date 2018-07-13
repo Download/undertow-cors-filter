@@ -206,7 +206,7 @@ public class Filter implements HttpHandler {
 	 * @see #getPolicyClass
 	 * @see #setPolicyClass
 	 */
-	public static final String DEFAULT_POLICY_CLASS = "com.bridalapp.platform.cors.AllowAll";
+	public static final String DEFAULT_POLICY_CLASS = "com.stijndewitt.undertow.cors.AllowAll";
 	
 	/**
 	 * The default policy parameter that will be used if no {@code policyParam} parameter was provided in the filter config.
@@ -637,7 +637,9 @@ public class Filter implements HttpHandler {
 			LOG.log(Level.SEVERE, "undertow-cors-filter: Unable to instantiate policy class " + name + " with parameter \"" + policyParam + "\".", e);
 			return null;
 		}
-		LOG.fine("undertow-cors-filter: Created policy from policy class " + name + " with param \"" + param + "\".");
+		if (LOG.isLoggable(Level.FINE)) {
+			LOG.fine("undertow-cors-filter: Created policy from policy class " + name + " with param \"" + param + "\".");
+		}
 		return result;
 	}
 
@@ -662,16 +664,20 @@ public class Filter implements HttpHandler {
 		
 		// This code is executed by a worker thread. It's save to do blocking I/O here.
 		String url = url(exchange);
-		if (pattern == null) pattern = Pattern.compile(urlPattern);
+		if (pattern == null) pattern = Pattern.compile(getUrlPattern());
 		if (pattern.matcher(url).matches()) {
-			LOG.fine("undertow-cors-filter: handling request " + url);
+			if (LOG.isLoggable(Level.FINE)) {
+				LOG.fine("undertow-cors-filter: handling request " + url);
+			}
 			String origin = origin(exchange);
 			boolean allowed = applyPolicy(exchange, origin);
 			if (LOG.isLoggable(Level.INFO)) {
 				LOG.info("undertow-cors-filter: CORS headers " + (allowed ? "" : "NOT ") + "added for origin " + origin);
 			}
 		} else {
-			LOG.fine("undertow-cors-filter: NOT handling request " + url + ". Does not match urlPattern \"" + urlPattern + "\".");
+			if (LOG.isLoggable(Level.FINE)) {
+				LOG.fine("undertow-cors-filter: NOT handling request " + url + ". Does not match urlPattern \"" + urlPattern + "\".");
+			}
 		}
 		next.handleRequest(exchange);
 	}

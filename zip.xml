@@ -8,12 +8,12 @@
   <fileSets>
     <fileSet>
       <directory>${basedir}/target/modules/com/stijndewitt/undertow/cors/main</directory>
-      <outputDirectory>modules/com/stijndewitt/undertow/cors/main</outputDirectory>
+      <outputDirectory>modules/system/layers/base/com/stijndewitt/undertow/cors/main</outputDirectory>
       <includes><include>module.xml</include></includes>
     </fileSet>
     <fileSet>
       <directory>${basedir}/target</directory>
-      <outputDirectory>modules/com/stijndewitt/undertow/cors/main</outputDirectory>
+      <outputDirectory>modules/system/layers/base/com/stijndewitt/undertow/cors/main</outputDirectory>
       <includes><include>${project.build.finalName}.jar</include></includes>
     </fileSet>
   </fileSets>
